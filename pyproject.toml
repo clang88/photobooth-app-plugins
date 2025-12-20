@@ -2,7 +2,7 @@
 name = "filter-openai-plugin"
 version = "1.0.0"
 description = "OpenAI filter plugin for photobooth-app"
-authors = ["Your Name <your@email.com>"]
+authors = ["clang88 <lanchr7@gmail.com>"]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
