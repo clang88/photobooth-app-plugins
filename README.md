@@ -48,23 +48,14 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 
 ## Testing
 
-The project includes both unit tests and integration tests:
+The project includes some unit tests. In the future integration tests may also be added (to check if the plugin integrates correctly with the photobooth-app)
 
 ```bash
 # Run all tests
 cd photobooth-data && uv run python -m pytest ../tests/ -v
-
-# Run only unit tests
-cd photobooth-data && uv run python -m pytest ../tests/test_filter_openai.py -v
-
-# Run only integration tests  
-cd photobooth-data && uv run python -m pytest ../tests/test_integration.py -v
-
-# Run integration tests specifically
-cd photobooth-data && uv run python -m pytest -m integration -v
 ```
 
-**Note**: Tests must be run from the `photobooth-data` directory so the plugin system can discover the external plugin and store and use configurations from photobooth.
+**Note**: Tests should be run from the `photobooth-data` directory so the folders created won't pollute your project root.
 
 ## Structure
 

@@ -2,6 +2,16 @@
 # ignore photobooth data folder
 /photobooth-data
 
+# ignore photobooth-app folders if executed on root
+/config
+/cache
+/data
+/database
+/media
+/log
+/userdata
+/tmp
+/recycle
 
 
 # python files
