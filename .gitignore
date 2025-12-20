@@ -1,0 +1,35 @@
+
+# ignore photobooth data folder
+/photobooth-data
+
+
+
+# python files
+__pycache__
+
+# env to preconfigure photobooth
+.env
+.env.*
+
+# pytest
+.coverage*
+coverage.xml
+junit/*
+/tests_tmp
+.benchmarks/
+
+# build backends
+dist/*
+
+
+
+# ignore .DS_Store files in macos
+.DS_Store
+
+
+diagram_ProcessingPicture.png
+openapi.json
+
+# testing
+/experimental
+
