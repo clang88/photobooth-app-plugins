@@ -6,17 +6,21 @@ authors = ["Your Name <your@email.com>"]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "photobooth-app",  # Update to your local path or PyPI if available
     "Pillow",
     "niquests",
     "pydantic",
     "pydantic-settings",
-    "pytest",
 ]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "photobooth-app",
+]
 
 [tool.ruff]
 line-length = 150

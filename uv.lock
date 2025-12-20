@@ -516,21 +516,29 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "niquests" },
-    { name = "photobooth-app", version = "8.0.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "photobooth-app", version = "8.6.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "photobooth-app", version = "8.0.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "photobooth-app", version = "8.6.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "niquests" },
-    { name = "photobooth-app" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "photobooth-app" },
     { name = "pytest" },
 ]
 
@@ -1010,7 +1018,7 @@ name = "linuxpy"
 version = "0.23.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12' and sys_platform != 'darwin'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/32/0d/2b059cb682a00d884e1c5a4a36d7552c0e13c073dc763bce06091a48664f/linuxpy-0.23.0.tar.gz", hash = "sha256:ab780f5092fc33592b4a370f66892630dc44fa0d562d614960fe20e90e7f00f7", size = 445483, upload-time = "2025-08-13T06:30:42.483Z" }
 wheels = [
