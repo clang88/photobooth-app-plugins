@@ -2,8 +2,8 @@ import logging
 from unittest.mock import Mock, patch
 
 import pytest
-from photobooth.plugins.filter_openai.config import FilterOpenAiConfig
-from photobooth.plugins.filter_openai.filter_openai import FilterOpenai
+from filter_openai.config import FilterOpenAiConfig
+from filter_openai.filter_openai import FilterOpenai
 from PIL import Image
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def filter_openai_plugin():
     """Setup AI filter plugin for testing."""
     # Mock the config loading to avoid file system dependencies
-    with patch("photobooth.plugins.filter_openai.config.FilterOpenAiConfig") as mock_config_class:
+    with patch("filter_openai.config.FilterOpenAiConfig") as mock_config_class:
         # Create a real config instance but bypass file loading
         config = FilterOpenAiConfig.model_construct()
         mock_config_class.return_value = config
@@ -164,7 +164,7 @@ def test_base64_conversion(filter_openai_plugin, test_image):
 def test_custom_prompt_functionality(filter_openai_plugin):
     """Test custom style configuration through style_prompts."""
     # Test adding a custom style prompt
-    from photobooth.plugins.filter_openai.models import StylePrompt
+    from filter_openai.models import StylePrompt
 
     custom_style = StylePrompt(style_name="test_custom", prompt="test custom prompt", enabled=True)
     filter_openai_plugin._config.style_prompts.append(custom_style)
@@ -190,7 +190,7 @@ def test_custom_filter_with_api_call(mock_post, filter_openai_plugin, test_image
 
     filter_openai_plugin._config.connection.openai_api_key = "test_key"
     # Add a custom style to test with
-    from photobooth.plugins.filter_openai.models import StylePrompt
+    from filter_openai.models import StylePrompt
 
     custom_style = StylePrompt(style_name="custom", prompt="my custom test prompt", enabled=True)
     filter_openai_plugin._config.style_prompts.append(custom_style)
