@@ -15,6 +15,9 @@ dependencies = [
 [tool.pytest.ini_options]
 pythonpath = ["src", "photobooth-data/plugins"]
 testpaths = ["tests"]
+markers = [
+    "integration: marks tests as integration tests that verify plugin system interaction",
+]
 
 [dependency-groups]
 dev = [
