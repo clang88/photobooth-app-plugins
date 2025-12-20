@@ -1,6 +1,6 @@
 [project]
 name = "filter-openai-plugin"
-version = "0.1.0"
+version = "1.0.0"
 description = "OpenAI filter plugin for photobooth-app"
 authors = ["Your Name <your@email.com>"]
 readme = "README.md"
