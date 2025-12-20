@@ -11,8 +11,9 @@ This plugin adds AI-powered image filters to the photobooth application using Op
 - **Caching**: Optional result caching to avoid regenerating identical images (useful for switching between styles)
 - **Fallback Support**: Option to return original image if AI generation fails
 
-## Missing features
-- **Preview Mode**: Currently just returns original image for quick previews, perhaps adding the option to define a "sample" image that is presented as an example for the prompt might be a good workaround; unsure if this can be done via plugins...
+## Missing Features
+- **Preview Mode**: Currently, preview mode simply returns the original image for faster performance. As a possible improvement, allowing a configurable "sample" image to be shown as an example for prompts could be a workaround, though it's unclear if this is possible via plugins.
+- **API Key Security**: The plugin's settings, including the OpenAI API key, are saved in plain text within a .json file on the server. There is no built-in encryption for this sensitive information. For this reason, it is strongly recommended to use this plugin only in secure, trusted environments where access to the server filesystem is restricted.
 
 ## Configuration
 
