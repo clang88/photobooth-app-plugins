@@ -15,6 +15,7 @@ OpenAI filter plugin for photobooth-app.
 
 ### Missing features
 - **Preview Mode**: Currently just returns original image for quick previews, perhaps adding the option to define a "sample" image that is presented as an example for the prompt might be a good workaround; unsure if this can be done via plugins...
+- **API Key Security**: The plugin's settings, including the OpenAI API key, are saved in plain text within a .json file on the server. There is no built-in encryption for this sensitive information. For this reason, it is strongly recommended to use this plugin only in secure, trusted environments where access to the server filesystem is restricted.
 
 
 ## Installation of plugins
