@@ -21,6 +21,7 @@ testpaths = ["tests"]
 dev = [
     "pytest",
     "photobooth-app",
+    "ipykernel"
 ]
 
 [tool.ruff]
