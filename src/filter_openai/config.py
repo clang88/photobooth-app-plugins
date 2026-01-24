@@ -15,9 +15,9 @@ class ConnectionSettings(BaseModel):
         description="OpenAI API key for DALL-E/GPT image processing. Obtain from https://platform.openai.com/account/api-keys",
     )
 
-    openai_model: Literal["dall-e-2", "gpt-image-1", "gpt-image-1-mini", "gpt-image-1.5"] = Field(
+    default_model: Literal["gpt-image-1", "gpt-image-1-mini", "gpt-image-1.5"] = Field(
         default="gpt-image-1",
-        description="OpenAI model to use (dall-e-2, gpt-image-1).",
+        description="Default OpenAI model to use for image generation when no model is specified in style prompts. gpt-image-1 for quality and features, gpt-image-1-mini for speed, gpt-image-1.5 for advanced features.",
     )
 
     timeout_seconds: int = Field(

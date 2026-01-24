@@ -89,7 +89,7 @@ class FilterNanobananaConfig(BaseConfig):
     style_prompts: list[StylePrompt] = Field(
         default=[
             StylePrompt(style_name="jojo", prompt="Redraw this portrait in the style of Jojo's Bizarre Adventure, exaggerated poses and vibrant colors with thick lines."),
-            StylePrompt(style_name="anime", prompt="Redraw this portrait in a style similar to Howl's Moving Castle by Studio Ghibli."),
+            StylePrompt(style_name="anime", prompt="Redraw this portrait in an anime style similar to Howl's Moving Castle by Studio Ghibli."),
             StylePrompt(style_name="cartoon", prompt="Transform this portrait into a cartoon style, animated, colorful, disney-like illustration"),
             StylePrompt(style_name="sketch", prompt="Convert this portrait to a pencil sketch, black and white drawing, artistic sketch"),
             StylePrompt(style_name="watercolor", prompt="Transform this portrait into a watercolor painting, soft brush strokes, artistic"),

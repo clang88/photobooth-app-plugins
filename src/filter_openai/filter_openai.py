@@ -16,14 +16,6 @@ logger = logging.getLogger(__name__)
 
 # Model-specific parameter configuration
 MODEL_CONFIG = {
-    "dall-e-2": {
-        "supported_params": {"model", "prompt", "n", "size", "response_format", "user"},
-        "defaults": {
-            "size": "1024x1024",
-            "response_format": "b64_json",
-        },
-        "supported_values": {"size": ["256x256", "512x512", "1024x1024"]},
-    },
     "gpt-image-1": {
         "supported_params": {
             "model",
@@ -163,18 +155,21 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
         image.save(img_bytes, format="PNG")
         img_hash = hashlib.md5(img_bytes.getvalue()).hexdigest()[:16]
 
-        settings_hash = hashlib.md5(f"{filter_type}:{preview}".encode()).hexdigest()[:16]
+        # Get model for this filter type to include in cache key
+        model = self._config.connection.default_model  # Default fallback
+        for style in self._config.style_prompts:
+            if style.style_name == filter_type and style.enabled:
+                model = style.model if style.model else self._config.connection.default_model
+                break
+
+        settings_hash = hashlib.md5(f"{filter_type}:{preview}:{model}".encode()).hexdigest()[:16]
 
         return f"{img_hash}_{settings_hash}"
 
-    def _image_to_bytes(self, image: Image.Image, format: str = "png") -> bytes:
+    def _image_to_bytes(self, image: Image.Image, format: str = "png", model: str = None) -> bytes:
         buffer = io.BytesIO()
-        model = self._config.connection.openai_model
-        # Convert to RGBA format as required by DALL-E 2
-        if model == "dall-e-2" and image.mode != "RGBA":
-            image = image.convert("RGBA")
-        # Convert to RGB for other models if not already RGB or RGBA
-        elif image.mode not in ("RGB", "RGBA"):
+        # Convert to RGB for models if not already RGB or RGBA
+        if image.mode not in ("RGB", "RGBA"):
             image = image.convert("RGB")
         image.save(buffer, format=format)
         return buffer.getvalue()
@@ -199,8 +194,8 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
         """Filter parameters based on model capabilities and apply defaults."""
         model_config = MODEL_CONFIG.get(model)
         if not model_config:
-            logger.warning(f"Unknown model '{model}', using dall-e-2 defaults")
-            model_config = MODEL_CONFIG["dall-e-2"]
+            logger.warning(f"Unknown model '{model}', using gpt-image-1 defaults")
+            model_config = MODEL_CONFIG["gpt-image-1"]
 
         supported_params = model_config["supported_params"]
         defaults = model_config["defaults"]
@@ -228,17 +223,19 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
         """Apply filter using OpenAI DALL-E or GPT-Image-1."""
         if not self._config.connection.openai_api_key:
             raise ValueError("OpenAI API key not configured")
-        model = self._config.connection.openai_model
 
         # For preview mode, for now we just return the normal image...
         if preview:
             return image
 
-        # Get style prompt for this filter type
+        # Get style prompt and model for this filter type
         style_prompt = None
+        model = None
         for style in self._config.style_prompts:
             if style.style_name == filter_type and style.enabled:
                 style_prompt = style.prompt
+                # Use style-specific model if available, otherwise fall back to default
+                model = style.model if style.model else self._config.connection.default_model
                 break
 
         if style_prompt is None:
@@ -247,7 +244,7 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
         prompt = f"{style_prompt}"
 
         # Convert image to bytes
-        image_bytes = self._image_to_bytes(image)
+        image_bytes = self._image_to_bytes(image, model=model)
 
         # Build requested parameters - only include parameters that exist in config
         requested_params = {
@@ -315,12 +312,12 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
 
             # Handle response format differences
             if "b64_json" in response_data:
-                # GPT models and dall-e-2 with b64_json format
+                # GPT models with b64_json format
                 logger.debug("Processing b64_json response...")
                 generated_image_b64 = response_data["b64_json"]
                 return self._base64_to_image(generated_image_b64)
             elif "url" in response_data:
-                # dall-e-2 with URL format (fallback)
+                # URL format (fallback)
                 logger.warning("Received URL response, downloading image (consider using b64_json format)")
                 image_url = response_data["url"]
                 img_response = requests.get(image_url, timeout=30)
