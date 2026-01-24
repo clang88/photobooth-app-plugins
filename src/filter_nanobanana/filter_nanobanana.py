@@ -94,7 +94,14 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
         image.save(img_bytes, format="PNG")
         img_hash = hashlib.md5(img_bytes.getvalue()).hexdigest()[:16]
 
-        settings_hash = hashlib.md5(f"{filter_type}:{preview}".encode()).hexdigest()[:16]
+        # Get model for this filter type to include in cache key
+        model = self._config.connection.default_model  # Default fallback
+        for style in self._config.style_prompts:
+            if style.style_name == filter_type and style.enabled:
+                model = style.model if style.model else self._config.connection.default_model
+                break
+
+        settings_hash = hashlib.md5(f"{filter_type}:{preview}:{model}".encode()).hexdigest()[:16]
 
         return f"{img_hash}_{settings_hash}"
 
@@ -145,18 +152,19 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
         """Apply filter using Google Gemini API."""
         if not self._config.connection.gemini_api_key:
             raise ValueError("Gemini API key not configured")
-        
-        model = self._config.connection.gemini_model
 
         # For preview mode, for now we just return the normal image...
         if preview:
             return image
 
-        # Get style prompt for this filter type
+        # Get style prompt and model for this filter type
         style_prompt = None
+        model = None
         for style in self._config.style_prompts:
             if style.style_name == filter_type and style.enabled:
                 style_prompt = style.prompt
+                # Use style-specific model if available, otherwise fall back to default
+                model = style.model if style.model else self._config.connection.default_model
                 break
 
         if style_prompt is None:
