@@ -16,7 +16,7 @@ class ConnectionSettings(BaseModel):
     )
 
     default_model: Literal["gpt-image-1", "gpt-image-1-mini", "gpt-image-1.5"] = Field(
-        default="gpt-image-1",
+        default="gpt-image-1.5",
         description="Default OpenAI model to use for image generation when no model is specified in style prompts. gpt-image-1 for quality and features, gpt-image-1-mini for speed, gpt-image-1.5 for advanced features.",
     )
 
