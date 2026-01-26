@@ -98,6 +98,7 @@ class FilterNanobananaConfig(BaseConfig):
             StylePrompt(style_name="cyberpunk", prompt="Redraw this portrait in cyberpunk style, neon lights, futuristic, sci-fi aesthetic"),
             StylePrompt(style_name="fantasy", prompt="Transform this portrait into fantasy art, magical, ethereal, mystical atmosphere"),
             StylePrompt(style_name="pixar", prompt="Redraw this portrait in Pixar animation style, 3D rendered appearance, colorful and friendly"),
+            StylePrompt(style_name="custom", prompt="This prompt is read from a the 'prompt.txt' file in the {CONFIG_PATH}/photobooth-data/prompts/ folder. Do not modify!")
         ],
         description="Prompt templates for different AI filter styles. These guide the AI generation process.",
     )

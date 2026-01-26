@@ -8,6 +8,7 @@ from PIL import Image
 
 from photobooth.plugins import hookimpl
 from photobooth.plugins.base_plugin import BaseFilter
+from photobooth import CONFIG_PATH
 
 from .config import FilterNanobananaConfig
 
@@ -162,7 +163,15 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
         model = None
         for style in self._config.style_prompts:
             if style.style_name == filter_type:
-                style_prompt = style.prompt
+                if filter_type == "custom":
+                    try:
+                        with open(f"{CONFIG_PATH}/prompts/prompt.txt", "r") as f:
+                            style_prompt = f.read().strip()
+                    except Exception as e:
+                        logger.error(f"Error reading custom prompt: {e}")
+                        style_prompt = None
+                else:
+                    style_prompt = style.prompt
                 # Use style-specific model if available, otherwise fall back to default
                 model = style.model if style.model else self._config.connection.default_model
                 break
