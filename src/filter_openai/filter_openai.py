@@ -158,7 +158,7 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
         # Get model for this filter type to include in cache key
         model = self._config.connection.default_model  # Default fallback
         for style in self._config.style_prompts:
-            if style.style_name == filter_type and style.enabled:
+            if style.style_name == filter_type:
                 model = style.model if style.model else self._config.connection.default_model
                 break
 
@@ -232,14 +232,14 @@ class FilterOpenai(BaseFilter[FilterOpenAiConfig]):
         style_prompt = None
         model = None
         for style in self._config.style_prompts:
-            if style.style_name == filter_type and style.enabled:
+            if style.style_name == filter_type:
                 style_prompt = style.prompt
                 # Use style-specific model if available, otherwise fall back to default
                 model = style.model if style.model else self._config.connection.default_model
                 break
 
         if style_prompt is None:
-            raise ValueError(f"Filter '{filter_type}' not found in enabled style_prompts")
+            raise ValueError(f"Filter '{filter_type}' not found in style_prompts")
 
         prompt = f"{style_prompt}"
 
