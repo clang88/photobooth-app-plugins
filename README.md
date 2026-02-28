@@ -18,6 +18,18 @@ OpenAI filter plugin for photobooth-app.
 - **API Key Security**: The plugin's settings, including the OpenAI API key, are saved in plain text within a .json file on the server. There is no built-in encryption for this sensitive information. For this reason, it is strongly recommended to use this plugin only in secure, trusted environments where access to the server filesystem is restricted.
 
 
+## filter-nanobanana-plugin
+
+Google Gemini image-to-image filter plugin for photobooth-app.
+
+### Features
+
+- **Gemini Models**: Supports `gemini-2.5-flash-image` and `gemini-3-pro-image-preview`
+- **Style Prompts**: Built-in style presets plus a configurable custom prompt
+- **Configurable Output**: Adjustable input format, aspect ratio, image size, and timeout
+- **Caching + Fallback**: Optional in-memory caching and fallback to original image on errors
+
+
 ## Installation of plugins
 
 The plugins are automatically discovered by the photobooth-app plugin system
@@ -45,7 +57,7 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 
 3. **Set up local photobooth-app**:
    The dev dependencies include `photobooth-app` configured to install from PyPI.
-   To test manually, simpy run `uv run photobooth` from the `photobooth-data` directory in the root of this repo (you will need to create it first)
+   To test manually, simpy run `uv run photobooth` from the `photobooth-data` directory in the root of this repo (you will need to create it first; don't forget to link `src` to `plugins` in the directory)
 
 ## Testing
 
@@ -60,13 +72,9 @@ cd photobooth-data && uv run python -m pytest ../tests/ -v
 
 ## Structure
 
-- `photobooth-data/plugins/filter_openai/` — Plugin source code
-  - `filter_openai.py` — Main plugin implementation  
-  - `config.py` — Plugin configuration
-  - `models.py` — Pydantic models
-- `tests/` — Test suite
-  - `test_filter_openai.py` — Unit tests
-  - `test_integration.py` — Integration tests with photobooth app
-- `pyproject.toml` — Project configuration with dev dependencies
-- `photobooth-data/` — Test environment mimicking photobooth app structure
+- `src/` — Plugin packages (e.g. `filter_openai`, `filter_nanobanana`, others)
+- `tests/` — Unit/integration tests for plugins
+- `examples/plugins/` — Example plugin implementations
+- `photobooth-data/` — Local photobooth runtime data for manual testing
+- `pyproject.toml` — Project/dependency configuration
 
