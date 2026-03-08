@@ -223,7 +223,9 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
         api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
         try:
-            logger.debug(f"Sending request to Gemini API with model '{model}'...")
+            logger.info(f"Sending request to Gemini API with model '{model}'...")
+            logger.debug(f"Prompt: {style_prompt}") 
+
             session = requests.Session(disable_http3=True)
             response = session.post(
                 api_url, 
