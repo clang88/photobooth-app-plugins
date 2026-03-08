@@ -14,7 +14,7 @@ class StylePrompt(BaseModel):
         description="Enable this style prompt.",
         default=True,
     )
-    model: Optional[Literal[None, "gemini-2.5-flash-image", "gemini-3-pro-image-preview"]] = Field(
+    model: Optional[Literal[None, "gemini-2.5-flash-image", "gemini-3-pro-image-preview", "gemini-3.1-flash-image-previews"]] = Field(
         default=None,
         description="Google Gemini model to use for this specific style. If not set, will use the default model from connection settings.",
     )

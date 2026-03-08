@@ -194,8 +194,8 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Build generation config based on model capabilities
         generation_config = {}
-        if model == "gemini-3-pro-image-preview":
-            # Only gemini-3-pro-image-preview supports imageConfig
+        if model in ["gemini-3-pro-image-preview", "gemini-3.1-flash-image-previews"]:
+            # Only gemini-3-pro-image-preview and gemini-3.1-flash-image-previews support imageConfig
             generation_config["imageConfig"] = {
                 "aspectRatio": self._config.image_generation.aspect_ratio,
                 "imageSize": self._config.image_generation.image_size,
