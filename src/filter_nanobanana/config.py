@@ -15,7 +15,7 @@ class ConnectionSettings(BaseModel):
         description="Google Gemini API key for AI image processing. Obtain from https://aistudio.google.com/app/apikey",
     )
 
-    default_model: Literal["gemini-2.5-flash-image", "gemini-3-pro-image-preview"] = Field(
+    default_model: Literal["gemini-2.5-flash-image", "gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"] = Field(
         default="gemini-2.5-flash-image",
         description="Default Google Gemini model to use for image generation when no model is specified in style prompts. gemini-2.5-flash-image for speed, gemini-3-pro-image-preview for quality.",
     )
