@@ -11,7 +11,7 @@ from photobooth.plugins.base_plugin import BaseFilter
 from photobooth import CONFIG_PATH
 
 from .config import FilterNanobananaConfig
-from .model_catalog import GeminiModels, get_allowed_aspect_ratios, get_allowed_image_sizes, supports_image_size
+from .model_catalog import GeminiModelLiteral, get_allowed_aspect_ratios, get_allowed_image_sizes, supports_image_size
 
 logger = logging.getLogger(__name__)
 
@@ -102,7 +102,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
                 model = style.model if style.model else self._config.connection.default_model
                 break
 
-        settings_hash = hashlib.md5(f"{filter_type}:{preview}:{model.value}".encode()).hexdigest()[:16]
+        settings_hash = hashlib.md5(f"{filter_type}:{preview}:{model}".encode()).hexdigest()[:16]
 
         return f"{img_hash}_{settings_hash}"
 
@@ -160,7 +160,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Get style prompt and model for this filter type
         style_prompt = None
-        model: GeminiModels | None = None
+        model: GeminiModelLiteral | None = None
         for style in self._config.style_prompts:
             if style.style_name == filter_type:
                 if filter_type == "custom":
@@ -178,6 +178,8 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         if style_prompt is None:
             raise ValueError(f"Filter '{filter_type}' not found in style_prompts")
+        if model is None:
+            raise ValueError(f"No model resolved for filter '{filter_type}'")
 
         # Convert image to base64
         image_b64 = self._image_to_base64(image)
@@ -203,7 +205,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
             image_config["aspectRatio"] = configured_aspect_ratio
         else:
             logger.warning(
-                f"Configured aspect ratio '{configured_aspect_ratio}' is not supported by model '{model.value}'. "
+                f"Configured aspect ratio '{configured_aspect_ratio}' is not supported by model '{model}'. "
                 "Omitting aspectRatio from imageConfig."
             )
 
@@ -213,7 +215,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
                 image_config["imageSize"] = configured_image_size
             else:
                 logger.warning(
-                    f"Configured image size '{configured_image_size}' is not supported by model '{model.value}'. "
+                    f"Configured image size '{configured_image_size}' is not supported by model '{model}'. "
                     "Omitting imageSize from imageConfig."
                 )
 
@@ -238,10 +240,10 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
             "generationConfig": generation_config
         }
 
-        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model.value}:generateContent"
+        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
         try:
-            logger.info(f"Sending request to Gemini API with model '{model.value}'...")
+            logger.info(f"Sending request to Gemini API with model '{model}'...")
             logger.debug(f"Prompt: {style_prompt}") 
 
             session = requests.Session(disable_http3=True)
@@ -295,7 +297,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
                 logger.error(f"No image data found in response parts: {parts}")
                 raise RuntimeError("No image data received from Gemini API")
 
-            logger.info(f"Successfully generated image using '{model.value}' model")
+            logger.info(f"Successfully generated image using '{model}' model")
             return generated_image
 
         except requests.exceptions.Timeout as e:

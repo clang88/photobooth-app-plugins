@@ -1,14 +1,15 @@
-from enum import Enum
+from typing import Literal, get_args
 
 
-class GeminiModels(str, Enum):
-    FLASH_25 = "gemini-2.5-flash-image"
-    PRO_3 = "gemini-3-pro-image"
-    FLASH_31 = "gemini-3.1-flash-image"
+GeminiModelLiteral = Literal[
+    "gemini-2.5-flash-image",
+    "gemini-3-pro-image",
+    "gemini-3.1-flash-image",
+]
 
+GEMINI_MODEL_VALUES: tuple[str, ...] = get_args(GeminiModelLiteral)
 
-DEFAULT_GEMINI_MODEL = GeminiModels.FLASH_31
-
+DEFAULT_GEMINI_MODEL: GeminiModelLiteral = "gemini-3.1-flash-image"
 
 COMMON_ASPECT_RATIOS: tuple[str, ...] = (
     "1:1",
@@ -24,21 +25,21 @@ COMMON_ASPECT_RATIOS: tuple[str, ...] = (
 )
 
 
-MODEL_IMAGE_SIZES: dict[GeminiModels, tuple[str, ...]] = {
-    GeminiModels.FLASH_25: (),
-    GeminiModels.PRO_3: ("1K", "2K", "4K"),
-    GeminiModels.FLASH_31: ("1K", "2K", "4K"),
+MODEL_IMAGE_SIZES: dict[GeminiModelLiteral, tuple[str, ...]] = {
+    "gemini-2.5-flash-image": (),
+    "gemini-3-pro-image": ("1K", "2K", "4K"),
+    "gemini-3.1-flash-image": ("512", "1K", "2K", "4K"),
 }
 
 
-def get_allowed_aspect_ratios(model: GeminiModels) -> tuple[str, ...]:
+def get_allowed_aspect_ratios(model: GeminiModelLiteral) -> tuple[str, ...]:
     _ = model
     return COMMON_ASPECT_RATIOS
 
 
-def get_allowed_image_sizes(model: GeminiModels) -> tuple[str, ...]:
+def get_allowed_image_sizes(model: GeminiModelLiteral) -> tuple[str, ...]:
     return MODEL_IMAGE_SIZES[model]
 
 
-def supports_image_size(model: GeminiModels) -> bool:
+def supports_image_size(model: GeminiModelLiteral) -> bool:
     return bool(get_allowed_image_sizes(model))

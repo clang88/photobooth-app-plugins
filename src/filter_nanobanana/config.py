@@ -6,11 +6,11 @@ from pydantic_settings import SettingsConfigDict
 from photobooth import CONFIG_PATH
 from photobooth.services.config.baseconfig import BaseConfig
 
-from .model_catalog import DEFAULT_GEMINI_MODEL, COMMON_ASPECT_RATIOS, GeminiModels, supports_image_size
+from .model_catalog import COMMON_ASPECT_RATIOS, DEFAULT_GEMINI_MODEL, GEMINI_MODEL_VALUES, MODEL_IMAGE_SIZES, GeminiModelLiteral
 from .models import StylePrompt
 
 
-MODELS_WITH_IMAGE_SIZE = ", ".join(model.value for model in GeminiModels if supports_image_size(model))
+MODELS_WITH_IMAGE_SIZE = ", ".join(model for model in GEMINI_MODEL_VALUES if MODEL_IMAGE_SIZES[model])
 SUPPORTED_ASPECT_RATIOS_DESCRIPTION = ", ".join(COMMON_ASPECT_RATIOS)
 
 
@@ -20,9 +20,9 @@ class ConnectionSettings(BaseModel):
         description="Google Gemini API key for AI image processing. Obtain from https://aistudio.google.com/app/apikey",
     )
 
-    default_model: GeminiModels = Field(
+    default_model: GeminiModelLiteral = Field(
         default=DEFAULT_GEMINI_MODEL,
-        description="Default Google Gemini model to use for image generation when no model is specified in style prompts. flash-image for speed, pro-image for quality.",
+        description="Default Google Gemini model to use for image generation when no model is specified in style prompts. Use flash-image for speed, pro-image for quality.",
     )
 
     timeout_seconds: int = Field(
