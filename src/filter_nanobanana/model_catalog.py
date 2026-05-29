@@ -10,11 +10,35 @@ class GeminiModels(str, Enum):
 DEFAULT_GEMINI_MODEL = GeminiModels.FLASH_31
 
 
-MODELS_WITH_IMAGE_CONFIG: set[GeminiModels] = {
-    GeminiModels.PRO_3,
-    GeminiModels.FLASH_31,
+COMMON_ASPECT_RATIOS: tuple[str, ...] = (
+    "1:1",
+    "2:3",
+    "3:2",
+    "3:4",
+    "4:3",
+    "4:5",
+    "5:4",
+    "9:16",
+    "16:9",
+    "21:9",
+)
+
+
+MODEL_IMAGE_SIZES: dict[GeminiModels, tuple[str, ...]] = {
+    GeminiModels.FLASH_25: (),
+    GeminiModels.PRO_3: ("1K", "2K", "4K"),
+    GeminiModels.FLASH_31: ("1K", "2K", "4K"),
 }
 
 
-def supports_image_config(model: GeminiModels) -> bool:
-    return model in MODELS_WITH_IMAGE_CONFIG
+def get_allowed_aspect_ratios(model: GeminiModels) -> tuple[str, ...]:
+    _ = model
+    return COMMON_ASPECT_RATIOS
+
+
+def get_allowed_image_sizes(model: GeminiModels) -> tuple[str, ...]:
+    return MODEL_IMAGE_SIZES[model]
+
+
+def supports_image_size(model: GeminiModels) -> bool:
+    return bool(get_allowed_image_sizes(model))

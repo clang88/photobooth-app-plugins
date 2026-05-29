@@ -11,7 +11,7 @@ from photobooth.plugins.base_plugin import BaseFilter
 from photobooth import CONFIG_PATH
 
 from .config import FilterNanobananaConfig
-from .model_catalog import GeminiModels, supports_image_config
+from .model_catalog import GeminiModels, get_allowed_aspect_ratios, get_allowed_image_sizes, supports_image_size
 
 logger = logging.getLogger(__name__)
 
@@ -194,12 +194,30 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Build generation config based on model capabilities
         generation_config = {}
-        if supports_image_config(model):
-            # Only specific Gemini models support imageConfig.
-            generation_config["imageConfig"] = {
-                "aspectRatio": self._config.image_generation.aspect_ratio,
-                "imageSize": self._config.image_generation.image_size,
-            }
+        image_config = {}
+        configured_aspect_ratio = self._config.image_generation.aspect_ratio
+        configured_image_size = self._config.image_generation.image_size
+
+        allowed_aspect_ratios = get_allowed_aspect_ratios(model)
+        if configured_aspect_ratio in allowed_aspect_ratios:
+            image_config["aspectRatio"] = configured_aspect_ratio
+        else:
+            logger.warning(
+                f"Configured aspect ratio '{configured_aspect_ratio}' is not supported by model '{model.value}'. "
+                "Omitting aspectRatio from imageConfig."
+            )
+
+        if supports_image_size(model):
+            allowed_image_sizes = get_allowed_image_sizes(model)
+            if configured_image_size in allowed_image_sizes:
+                image_config["imageSize"] = configured_image_size
+            else:
+                logger.warning(
+                    f"Configured image size '{configured_image_size}' is not supported by model '{model.value}'. "
+                    "Omitting imageSize from imageConfig."
+                )
+
+        generation_config["imageConfig"] = image_config
         
         generation_config["responseModalities"] = self._config.image_generation.response_modalities
 
