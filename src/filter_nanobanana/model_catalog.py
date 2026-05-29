@@ -7,7 +7,7 @@ class GeminiModels(str, Enum):
     FLASH_31 = "gemini-3.1-flash-image"
 
 
-DEFAULT_GEMINI_MODEL = GeminiModels.FLASH_25
+DEFAULT_GEMINI_MODEL = GeminiModels.FLASH_31
 
 
 MODELS_WITH_IMAGE_CONFIG: set[GeminiModels] = {
