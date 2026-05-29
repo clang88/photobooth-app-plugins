@@ -11,24 +11,9 @@ from photobooth.plugins.base_plugin import BaseFilter
 from photobooth import CONFIG_PATH
 
 from .config import FilterNanobananaConfig
+from .model_catalog import GeminiModel, supports_image_config
 
 logger = logging.getLogger(__name__)
-
-MODEL_CONFIG = {
-    "gemini-3-pro-image": {
-        "image_size": ["1K", "2K", "4K"],
-        "aspect_ratio": ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
-    },
-    "gemini-3.1-flash-image": {
-        "image_size": ["512","1K", "2K", "4K"],
-        "aspect_ratio": ["1:1","1:4", "4:1", "1:8", "8:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
-    },
-    "gemini-2.5-flash-image": {
-        "image_size": None,  # Not supported
-        "aspect_ratio": None,  # Not supported
-    }
-}
-
 
 class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
     def __init__(self):
@@ -117,7 +102,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
                 model = style.model if style.model else self._config.connection.default_model
                 break
 
-        settings_hash = hashlib.md5(f"{filter_type}:{preview}:{model}".encode()).hexdigest()[:16]
+        settings_hash = hashlib.md5(f"{filter_type}:{preview}:{model.value}".encode()).hexdigest()[:16]
 
         return f"{img_hash}_{settings_hash}"
 
@@ -175,7 +160,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Get style prompt and model for this filter type
         style_prompt = None
-        model = None
+        model: GeminiModel | None = None
         for style in self._config.style_prompts:
             if style.style_name == filter_type:
                 if filter_type == "custom":
@@ -209,8 +194,8 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Build generation config based on model capabilities
         generation_config = {}
-        if model in ["gemini-3-pro-image", "gemini-3.1-flash-image"]:
-            # Only gemini-3-pro-image and gemini-3.1-flash-image support imageConfig
+        if supports_image_config(model):
+            # Only specific Gemini models support imageConfig.
             generation_config["imageConfig"] = {
                 "aspectRatio": self._config.image_generation.aspect_ratio,
                 "imageSize": self._config.image_generation.image_size,
@@ -235,10 +220,10 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
             "generationConfig": generation_config
         }
 
-        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model.value}:generateContent"
 
         try:
-            logger.info(f"Sending request to Gemini API with model '{model}'...")
+            logger.info(f"Sending request to Gemini API with model '{model.value}'...")
             logger.debug(f"Prompt: {style_prompt}") 
 
             session = requests.Session(disable_http3=True)
@@ -292,7 +277,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
                 logger.error(f"No image data found in response parts: {parts}")
                 raise RuntimeError("No image data received from Gemini API")
 
-            logger.info(f"Successfully generated image using '{model}' model")
+            logger.info(f"Successfully generated image using '{model.value}' model")
             return generated_image
 
         except requests.exceptions.Timeout as e:
