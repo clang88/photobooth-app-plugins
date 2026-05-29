@@ -11,7 +11,7 @@ from photobooth.plugins.base_plugin import BaseFilter
 from photobooth import CONFIG_PATH
 
 from .config import FilterNanobananaConfig
-from .model_catalog import GeminiModel, supports_image_config
+from .model_catalog import GeminiModels, supports_image_config
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +160,7 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Get style prompt and model for this filter type
         style_prompt = None
-        model: GeminiModel | None = None
+        model: GeminiModels | None = None
         for style in self._config.style_prompts:
             if style.style_name == filter_type:
                 if filter_type == "custom":

@@ -6,7 +6,7 @@ from pydantic_settings import SettingsConfigDict
 from photobooth import CONFIG_PATH
 from photobooth.services.config.baseconfig import BaseConfig
 
-from .model_catalog import DEFAULT_GEMINI_MODEL, GeminiModel
+from .model_catalog import DEFAULT_GEMINI_MODEL, GeminiModels
 from .models import StylePrompt
 
 
@@ -16,7 +16,7 @@ class ConnectionSettings(BaseModel):
         description="Google Gemini API key for AI image processing. Obtain from https://aistudio.google.com/app/apikey",
     )
 
-    default_model: GeminiModel = Field(
+    default_model: GeminiModels = Field(
         default=DEFAULT_GEMINI_MODEL,
         description="Default Google Gemini model to use for image generation when no model is specified in style prompts. gemini-2.5-flash-image for speed, gemini-3-pro-image for quality.",
     )
