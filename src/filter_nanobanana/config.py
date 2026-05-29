@@ -15,9 +15,9 @@ class ConnectionSettings(BaseModel):
         description="Google Gemini API key for AI image processing. Obtain from https://aistudio.google.com/app/apikey",
     )
 
-    default_model: Literal["gemini-2.5-flash-image", "gemini-3-pro-image-preview", "gemini-3.1-flash-image-preview"] = Field(
+    default_model: Literal["gemini-2.5-flash-image", "gemini-3-pro-image", "gemini-3.1-flash-image"] = Field(
         default="gemini-2.5-flash-image",
-        description="Default Google Gemini model to use for image generation when no model is specified in style prompts. gemini-2.5-flash-image for speed, gemini-3-pro-image-preview for quality.",
+        description="Default Google Gemini model to use for image generation when no model is specified in style prompts. gemini-2.5-flash-image for speed, gemini-3-pro-image for quality.",
     )
 
     timeout_seconds: int = Field(
@@ -41,7 +41,7 @@ class ImageGenerationSettings(BaseModel):
 
     image_size: Literal["1K", "2K", "4K"] = Field(
         default="1K",
-        description="Resolution for generated images. Only available for gemini-3-pro-image-preview model.",
+        description="Resolution for generated images. Only available for gemini-3-pro-image and gemini-3.1-flash-image models.",
     )
 
     response_modalities: list[Literal["TEXT", "IMAGE"]] = Field(

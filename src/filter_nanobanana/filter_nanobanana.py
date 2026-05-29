@@ -14,6 +14,21 @@ from .config import FilterNanobananaConfig
 
 logger = logging.getLogger(__name__)
 
+MODEL_CONFIG = {
+    "gemini-3-pro-image": {
+        "image_size": ["1K", "2K", "4K"],
+        "aspect_ratio": ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
+    },
+    "gemini-3.1-flash-image": {
+        "image_size": ["512","1K", "2K", "4K"],
+        "aspect_ratio": ["1:1","1:4", "4:1", "1:8", "8:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
+    },
+    "gemini-2.5-flash-image": {
+        "image_size": None,  # Not supported
+        "aspect_ratio": None,  # Not supported
+    }
+}
+
 
 class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
     def __init__(self):
@@ -194,8 +209,8 @@ class FilterNanobanana(BaseFilter[FilterNanobananaConfig]):
 
         # Build generation config based on model capabilities
         generation_config = {}
-        if model in ["gemini-3-pro-image-preview", "gemini-3.1-flash-image-previews"]:
-            # Only gemini-3-pro-image-preview and gemini-3.1-flash-image-previews support imageConfig
+        if model in ["gemini-3-pro-image", "gemini-3.1-flash-image"]:
+            # Only gemini-3-pro-image and gemini-3.1-flash-image support imageConfig
             generation_config["imageConfig"] = {
                 "aspectRatio": self._config.image_generation.aspect_ratio,
                 "imageSize": self._config.image_generation.image_size,
