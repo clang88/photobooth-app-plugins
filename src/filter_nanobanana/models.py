@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from .model_catalog import GeminiModels
+from .model_catalog import GeminiModelLiteral
 
 
 class StylePrompt(BaseModel):
@@ -16,7 +16,7 @@ class StylePrompt(BaseModel):
         description="Enable this style prompt.",
         default=True,
     )
-    model: Optional[GeminiModels] = Field(
+    model: Optional[GeminiModelLiteral] = Field(
         default=None,
         description="Google Gemini model to use for this specific style. If not set, will use the default model from connection settings.",
     )
