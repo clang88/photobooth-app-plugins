@@ -6,8 +6,12 @@ from pydantic_settings import SettingsConfigDict
 from photobooth import CONFIG_PATH
 from photobooth.services.config.baseconfig import BaseConfig
 
-from .model_catalog import DEFAULT_GEMINI_MODEL, GeminiModels
+from .model_catalog import DEFAULT_GEMINI_MODEL, COMMON_ASPECT_RATIOS, GeminiModels, supports_image_size
 from .models import StylePrompt
+
+
+MODELS_WITH_IMAGE_SIZE = ", ".join(model.value for model in GeminiModels if supports_image_size(model))
+SUPPORTED_ASPECT_RATIOS_DESCRIPTION = ", ".join(COMMON_ASPECT_RATIOS)
 
 
 class ConnectionSettings(BaseModel):
@@ -18,7 +22,7 @@ class ConnectionSettings(BaseModel):
 
     default_model: GeminiModels = Field(
         default=DEFAULT_GEMINI_MODEL,
-        description="Default Google Gemini model to use for image generation when no model is specified in style prompts. gemini-2.5-flash-image for speed, gemini-3-pro-image for quality.",
+        description="Default Google Gemini model to use for image generation when no model is specified in style prompts. flash-image for speed, pro-image for quality.",
     )
 
     timeout_seconds: int = Field(
@@ -37,12 +41,12 @@ class ImageGenerationSettings(BaseModel):
 
     aspect_ratio: Literal["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"] = Field(
         default="1:1",
-        description="Aspect ratio for generated images.",
+        description=f"Aspect ratio for generated images. Supported values: {SUPPORTED_ASPECT_RATIOS_DESCRIPTION}.",
     )
 
     image_size: Literal["1K", "2K", "4K"] = Field(
         default="1K",
-        description="Resolution for generated images. Only available for gemini-3-pro-image and gemini-3.1-flash-image models.",
+        description=f"Resolution for generated images. Supported by: {MODELS_WITH_IMAGE_SIZE}.",
     )
 
     response_modalities: list[Literal["TEXT", "IMAGE"]] = Field(
