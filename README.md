@@ -1,3 +1,5 @@
+Update: Marking this repo as archived. I will continue working on the plugins directly in my [photobooth-app fork](https://github.com/clang88/photobooth-app) on the dev/plugins branch.
+
 # Plugins for the photobooth-app
 This repo contains plugins for the [photobooth-app](https://github.com/photobooth-app/photobooth-app). 
 
